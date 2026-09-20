@@ -388,10 +388,10 @@
       }
 
       const logs = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-      const totalSold = Number(document.getElementById('totalSold').textContent) || 0;
       const grossSales = Number(document.getElementById('grossSales').textContent.replace(/[^0-9.-]+/g, '')) || 0;
       const expenses = Number(document.getElementById('expenses').value) || 0;
-      const netSales = grossSales + (Number(document.getElementById('nataAddons').value) || 0) * PRICE_NATA - expenses;
+      const nataAddons = Number(document.getElementById('nataAddons').value) || 0;
+      const netSales = grossSales + (nataAddons * PRICE_NATA) - expenses;
 
       logs[date] = {
         date,
@@ -399,13 +399,13 @@
         notes: document.getElementById('notes').value,
         mediumSold: Number(document.querySelector('.sold[data-size="medium"]').value) || 0,
         largeSold: Number(document.querySelector('.sold[data-size="large"]').value) || 0,
-        totalSold,
+        totalSold: Number(document.getElementById('totalSold').textContent) || 0,
         grossSales,
         netSales,
         expenses,
         cashReceived: Number(document.getElementById('cashReceived').value) || 0,
         onlinePayment: Number(document.getElementById('onlinePayment').value) || 0,
-        nataAddons: Number(document.getElementById('nataAddons').value) || 0,
+        nataAddons,
         mediumStarting: Number(document.querySelector('.starting[data-size="medium"]').value) || 100,
         largeStarting: Number(document.querySelector('.starting[data-size="large"]').value) || 100,
         mediumDamaged: Number(document.querySelector('.damaged[data-size="medium"]').value) || 0,
