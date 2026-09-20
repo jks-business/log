@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JK's Fruit Soda - Daily Sales & Inventory</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(180deg, #dff3ff 0%, #f7fbff 100%);
+      color: #102d42;
+    }
+
+    .page {
+      max-width: 1200px;
+      margin: 24px auto;
+      background: #ffffff;
+      border: 3px solid #0c4e8a;
+      border-radius: 18px;
+      box-shadow: 0 10px 28px rgba(10, 61, 98, 0.18);
+      padding: 0;
+      overflow: hidden;
+    }
+
+    .brand-banner {
+      background: linear-gradient(135deg, #0b6dc1 0%, #0a4e8d 30%, #1a85d6 100%);
+      color: white;
+      padding: 22px 28px;
+      border-bottom: 4px solid #f4c542;
+      position: relative;
+    }
+
+    .brand-banner::before,
+    .brand-banner::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+    }
+
+    .brand-banner::before {
+      width: 180px;
+      height: 180px;
+      right: 120px;
+      top: -60px;
+    }
+
+    .brand-banner::after {
+      width: 120px;
+      height: 120px;
+      left: 90px;
+      bottom: -40px;
+    }
+
+    .brand-name {
+      font-size: 42px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-shadow: 3px 3px 0 rgba(0,0,0,0.12);
+      position: relative;
+      z-index: 1;
+    }
+
+    .brand-tag {
+      margin-top: 4px;
+      font-size: 18px;
+      font-weight: bold;
+      letter-spacing: 1.5px;
+      position: relative;
+      z-index: 1;
+      color: #e6f4ff;
+    }
+
+    .content {
+      padding: 24px;
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .top h2 {
+      margin: 0;
+      font-size: 28px;
+      color: #0d3b66;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .meta label {
+      font-weight: bold;
+      color: #2d5678;
+      font-size: 14px;
+    }
+
+    input {
+      padding: 9px 10px;
+      border: 1px solid #c9d7e5;
+      border-radius: 8px;
+      font-size: 14px;
+      background: white;
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(180px, 1fr));
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .card {
+      background: linear-gradient(180deg, #edf7ff 0%, #e7f3ff 100%);
+      border: 1px solid #d8ebff;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.7);
+    }
+
+    .label {
+      font-size: 12px;
+      font-weight: bold;
+      color: #4c6f8a;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .value {
+      font-size: 30px;
+      font-weight: 800;
+      color: #0d3b66;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    th, td {
+      border: 1px solid #dfeaf4;
+      text-align: center;
+      padding: 12px 10px;
+      font-size: 14px;
+    }
+
+    th {
+      background: linear-gradient(180deg, #0d3b66 0%, #0b2d4e 100%);
+      color: white;
+      font-weight: bold;
+    }
+
+    tbody tr:nth-child(even) {
+      background: #fafcfe;
+    }
+
+    .total-row td {
+      background: #eaf8ef;
+      color: #0d4d3d;
+      font-weight: 800;
+    }
+
+    .bottom {
+      margin-top: 24px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .panel {
+      background: #f8fafc;
+      border: 1px solid #dfeaf5;
+      border-radius: 12px;
+      padding: 18px;
+    }
+
+    .panel h3 {
+      margin: 0 0 14px 0;
+      color: #0d3b66;
+      font-size: 22px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-weight: bold;
+      color: #36526d;
+    }
+
+    .field input {
+      width: 100%;
+    }
+
+    .buttons {
+      margin-top: 22px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      border: none;
+      border-radius: 8px;
+      padding: 12px 18px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .primary {
+      background: linear-gradient(180deg, #0d3b66 0%, #0a2950 100%);
+      color: white;
+    }
+
+    .secondary {
+      background: #dfeef9;
+      color: #0d3b66;
+    }
+
+    @media (max-width: 760px) {
+      .summary, .bottom, .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .brand-name {
+        font-size: 30px;
+      }
+
+      .top h2 {
+        font-size: 22px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="brand-banner">
+      <div class="brand-name">JK's Fruit Soda</div>
+      <div class="brand-tag">Daily Sales &amp; Inventory Tracker</div>
+    </div>
+
+    <div class="content">
+      <div class="top">
+        <h2>Sales Log</h2>
+
+        <div class="meta">
+          <label>Date:
+            <input type="date" id="dateInput" />
+          </label>
+          <label>Staff:
+            <input type="text" id="staffInput" placeholder="Name" />
+          </label>
+        </div>
+      </div>
+
+      <div class="summary">
+        <div class="card">
+          <div class="label">Total Cups Sold</div>
+          <div class="value" id="totalCupsSold">0</div>
+        </div>
+        <div class="card">
+          <div class="label">Gross Sales</div>
+          <div class="value" id="grossSales">₱0.00</div>
+        </div>
+        <div class="card">
+          <div class="label">Remaining Cups</div>
+          <div class="value" id="remainingCups">0</div>
+        </div>
+        <div class="card">
+          <div class="label">Nata Add-ons</div>
+          <div class="value" id="nataSales">₱0.00</div>
+        </div>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Cup Size</th>
+            <th>Starting Cups</th>
+            <th>Cups Sold</th>
+            <th>Damaged / Unused</th>
+            <th>Remaining Cups</th>
+            <th>Price</th>
+            <th>Total Sales</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>12 oz Medium</td>
+            <td><input type="number" value="100" min="0" class="starting" data-size="medium" /></td>
+            <td><input type="number" value="0" min="0" class="sold" data-size="medium" /></td>
+            <td><input type="number" value="0" min="0" class="damaged" data-size="medium" /></td>
+            <td class="remaining-output" data-size="medium">100</td>
+            <td>₱29.00</td>
+            <td class="sales-output" data-size="medium">₱0.00</td>
+          </tr>
+
+          <tr>
+            <td>16 oz Large</td>
+            <td><input type="number" value="100" min="0" class="starting" data-size="large" /></td>
+            <td><input type="number" value="0" min="0" class="sold" data-size="large" /></td>
+            <td><input type="number" value="0" min="0" class="damaged" data-size="large" /></td>
+            <td class="remaining-output" data-size="large">100</td>
+            <td>₱39.00</td>
+            <td class="sales-output" data-size="large">₱0.00</td>
+          </tr>
+
+          <tr class="total-row">
+            <td>Total</td>
+            <td id="totalStarting">200</td>
+            <td id="totalSold">0</td>
+            <td id="totalDamaged">0</td>
+            <td id="totalRemaining">200</td>
+            <td>-</td>
+            <td id="totalSales">₱0.00</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="bottom">
+        <div class="panel">
+          <h3>Daily Summary</h3>
+          <div class="grid">
+            <div class="field">
+              <label>Cash Received</label>
+              <input type="number" id="cashReceived" value="0" min="0" step="0.01" />
+            </div>
+            <div class="field">
+              <label>Expenses</label>
+              <input type="number" id="expenses" value="0" min="0" step="0.01" />
+            </div>
+            <div class="field">
+              <label>GCash / Online</label>
+              <input type="number" id="onlinePayment" value="0" min="0" step="0.01" />
+            </div>
+            <div class="field">
+              <label>Nata Add-ons Sold</label>
+              <input type="number" id="nataAddons" value="0" min="0" />
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Final Totals</h3>
+          <div class="grid">
+            <div class="field">
+              <label>Net Sales</label>
+              <input type="text" id="netSalesDisplay" readonly value="₱0.00" />
+            </div>
+            <div class="field">
+              <label>Notes</label>
+              <input type="text" id="notes" placeholder="Optional" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="buttons">
+        <button class="primary" id="resetBtn">Reset</button>
+        <button class="secondary" id="printBtn">Print</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const PRICE_MEDIUM = 29;
+    const PRICE_LARGE = 39;
+    const PRICE_NATA = 5;
+
+    function money(value) {
+      return "₱" + Number(value).toFixed(2);
+    }
+
+    function calculate() {
+      let totalStarting = 0;
+      let totalSold = 0;
+      let totalDamaged = 0;
+      let totalRemaining = 0;
+      let grossSales = 0;
+
+      document.querySelectorAll(".starting").forEach((startInput) => {
+        const size = startInput.dataset.size;
+        const starting = Number(startInput.value) || 0;
+        const sold = Number(document.querySelector(`.sold[data-size="${size}"]`).value) || 0;
+        const damaged = Number(document.querySelector(`.damaged[data-size="${size}"]`).value) || 0;
+        const remaining = starting - sold - damaged;
+
+        document.querySelector(`.remaining-output[data-size="${size}"]`).textContent = remaining;
+
+        const price = size === "medium" ? PRICE_MEDIUM : PRICE_LARGE;
+        const sales = sold * price;
+        document.querySelector(`.sales-output[data-size="${size}"]`).textContent = money(sales);
+
+        totalStarting += starting;
+        totalSold += sold;
+        totalDamaged += damaged;
+        totalRemaining += remaining;
+        grossSales += sales;
+      });
+
+      const nataAddons = Number(document.getElementById("nataAddons").value) || 0;
+      const nataSales = nataAddons * PRICE_NATA;
+      const expenses = Number(document.getElementById("expenses").value) || 0;
+      const totalSales = grossSales + nataSales;
+      const netSales = totalSales - expenses;
+
+      document.getElementById("totalStarting").textContent = totalStarting;
+      document.getElementById("totalSold").textContent = totalSold;
+      document.getElementById("totalDamaged").textContent = totalDamaged;
+      document.getElementById("totalRemaining").textContent = totalRemaining;
+      document.getElementById("totalSales").textContent = money(totalSales);
+
+      document.getElementById("totalCupsSold").textContent = totalSold;
+      document.getElementById("grossSales").textContent = money(grossSales);
+      document.getElementById("remainingCups").textContent = totalRemaining;
+      document.getElementById("nataSales").textContent = money(nataSales);
+      document.getElementById("netSalesDisplay").value = money(netSales);
+    }
+
+    document.querySelectorAll("input").forEach((input) => {
+      input.addEventListener("input", calculate);
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", () => {
+      document.querySelectorAll(".starting").forEach((el) => el.value = 100);
+      document.querySelectorAll(".sold").forEach((el) => el.value = 0);
+      document.querySelectorAll(".damaged").forEach((el) => el.value = 0);
+      document.getElementById("cashReceived").value = 0;
+      document.getElementById("expenses").value = 0;
+      document.getElementById("onlinePayment").value = 0;
+      document.getElementById("nataAddons").value = 0;
+      document.getElementById("dateInput").value = "";
+      document.getElementById("staffInput").value = "";
+      document.getElementById("notes").value = "";
+      calculate();
+    });
+
+    document.getElementById("printBtn").addEventListener("click", () => {
+      window.print();
+    });
+
+    calculate();
+  </script>
+</body>
+</html>
