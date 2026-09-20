@@ -3,276 +3,215 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>JK's Fruit Soda - Daily Sales & Inventory</title>
+  <title>JK's Fruit Soda - Sales & Inventory</title>
   <style>
     * { box-sizing: border-box; }
-
     body {
       margin: 0;
+      background: linear-gradient(180deg, #eaf7ff 0%, #f9fcff 100%);
       font-family: Arial, sans-serif;
-      background: linear-gradient(180deg, #dff3ff 0%, #f7fbff 100%);
-      color: #102d42;
+      color: #12314d;
     }
-
     .page {
       max-width: 1200px;
-      margin: 24px auto;
-      background: #ffffff;
-      border: 3px solid #0c4e8a;
+      margin: 28px auto;
+      background: white;
+      border: 3px solid #0d3b66;
       border-radius: 18px;
-      box-shadow: 0 10px 28px rgba(10, 61, 98, 0.18);
-      padding: 0;
       overflow: hidden;
+      box-shadow: 0 14px 30px rgba(13, 59, 102, 0.15);
     }
-
-    .brand-banner {
-      background: linear-gradient(135deg, #0b6dc1 0%, #0a4e8d 30%, #1a85d6 100%);
+    .topbar {
+      background: linear-gradient(135deg, #0b6dc1 0%, #0a4e8d 35%, #1a85d6 100%);
       color: white;
-      padding: 22px 28px;
+      padding: 24px 26px;
       border-bottom: 4px solid #f4c542;
       position: relative;
     }
-
-    .brand-banner::before,
-    .brand-banner::after {
+    .topbar::before, .topbar::after {
       content: "";
       position: absolute;
       border-radius: 50%;
       background: rgba(255,255,255,0.08);
     }
-
-    .brand-banner::before {
+    .topbar::before {
       width: 180px;
       height: 180px;
-      right: 120px;
+      right: 100px;
       top: -60px;
     }
-
-    .brand-banner::after {
+    .topbar::after {
       width: 120px;
       height: 120px;
       left: 90px;
       bottom: -40px;
     }
-
-    .brand-name {
-      font-size: 42px;
+    .brand {
+      position: relative;
+      z-index: 1;
+      font-size: 38px;
       font-weight: 900;
       text-transform: uppercase;
       letter-spacing: 1px;
-      text-shadow: 3px 3px 0 rgba(0,0,0,0.12);
+    }
+    .tagline {
       position: relative;
       z-index: 1;
-    }
-
-    .brand-tag {
-      margin-top: 4px;
+      margin-top: 7px;
       font-size: 18px;
       font-weight: bold;
-      letter-spacing: 1.5px;
-      position: relative;
-      z-index: 1;
-      color: #e6f4ff;
+      color: #e9f5ff;
     }
-
     .content {
       padding: 24px;
     }
-
-    .top {
+    .toolbar {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 18px;
+      gap: 12px;
       flex-wrap: wrap;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
-
-    .top h2 {
+    .toolbar h2 {
       margin: 0;
       font-size: 28px;
       color: #0d3b66;
     }
-
     .meta {
       display: flex;
-      flex-wrap: wrap;
       gap: 12px;
+      flex-wrap: wrap;
       align-items: center;
     }
-
     .meta label {
+      font-size: 14px;
       font-weight: bold;
       color: #2d5678;
-      font-size: 14px;
     }
-
     input {
       padding: 9px 10px;
       border: 1px solid #c9d7e5;
       border-radius: 8px;
       font-size: 14px;
-      background: white;
     }
-
     .summary {
       display: grid;
-      grid-template-columns: repeat(4, minmax(180px, 1fr));
+      grid-template-columns: repeat(4, minmax(170px, 1fr));
       gap: 14px;
       margin-bottom: 18px;
     }
-
     .card {
       background: linear-gradient(180deg, #edf7ff 0%, #e7f3ff 100%);
-      border: 1px solid #d8ebff;
+      border: 1px solid #d9ebff;
       border-radius: 12px;
       padding: 16px;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.7);
     }
-
-    .label {
+    .card .label {
       font-size: 12px;
       font-weight: bold;
-      color: #4c6f8a;
+      color: #496b82;
       margin-bottom: 8px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
-
-    .value {
+    .card .value {
       font-size: 30px;
       font-weight: 800;
       color: #0d3b66;
     }
-
     table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 10px;
-      border-radius: 12px;
-      overflow: hidden;
     }
-
     th, td {
-      border: 1px solid #dfeaf4;
-      text-align: center;
+      border: 1px solid #dfeaf5;
       padding: 12px 10px;
+      text-align: center;
       font-size: 14px;
     }
-
     th {
       background: linear-gradient(180deg, #0d3b66 0%, #0b2d4e 100%);
       color: white;
+    }
+    tbody tr:nth-child(even) {
+      background: #fafcff;
+    }
+    .total-row td {
+      background: #ebf8ef;
+      color: #0d4d3d;
       font-weight: bold;
     }
-
-    tbody tr:nth-child(even) {
-      background: #fafcfe;
-    }
-
-    .total-row td {
-      background: #eaf8ef;
-      color: #0d4d3d;
-      font-weight: 800;
-    }
-
     .bottom {
       margin-top: 24px;
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 18px;
     }
-
     .panel {
       background: #f8fafc;
       border: 1px solid #dfeaf5;
       border-radius: 12px;
       padding: 18px;
     }
-
     .panel h3 {
       margin: 0 0 14px 0;
       color: #0d3b66;
       font-size: 22px;
     }
-
     .grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
     }
-
     .field {
       display: flex;
       flex-direction: column;
       gap: 6px;
       font-weight: bold;
-      color: #36526d;
+      color: #35526d;
     }
-
     .field input {
       width: 100%;
     }
-
     .buttons {
       margin-top: 22px;
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
     }
-
     button {
       border: none;
       border-radius: 8px;
-      padding: 12px 18px;
+      padding: 12px 16px;
       font-weight: bold;
       cursor: pointer;
       font-size: 14px;
     }
-
-    .primary {
-      background: linear-gradient(180deg, #0d3b66 0%, #0a2950 100%);
-      color: white;
-    }
-
-    .secondary {
-      background: #dfeef9;
-      color: #0d3b66;
-    }
-
+    .primary { background: #0d3b66; color: white; }
+    .secondary { background: #e2eef9; color: #0d3b66; }
     @media (max-width: 760px) {
-      .summary, .bottom, .grid {
-        grid-template-columns: 1fr;
-      }
-
-      .brand-name {
-        font-size: 30px;
-      }
-
-      .top h2 {
-        font-size: 22px;
-      }
+      .summary, .bottom, .grid { grid-template-columns: 1fr; }
+      .brand { font-size: 28px; }
     }
   </style>
 </head>
 <body>
   <div class="page">
-    <div class="brand-banner">
-      <div class="brand-name">JK's Fruit Soda</div>
-      <div class="brand-tag">Daily Sales &amp; Inventory Tracker</div>
+    <div class="topbar">
+      <div>
+        <div class="brand">JK's Fruit Soda</div>
+        <div class="tagline">Daily Sales &amp; Inventory Tracker</div>
+      </div>
     </div>
 
     <div class="content">
-      <div class="top">
+      <div class="toolbar">
         <h2>Sales Log</h2>
-
         <div class="meta">
-          <label>Date:
-            <input type="date" id="dateInput" />
-          </label>
-          <label>Staff:
-            <input type="text" id="staffInput" placeholder="Name" />
-          </label>
+          <label>Date: <input type="date" id="dateInput" /></label>
+          <label>Staff: <input type="text" id="staffInput" placeholder="Name" /></label>
         </div>
       </div>
 
@@ -317,7 +256,6 @@
             <td>₱29.00</td>
             <td class="sales-output" data-size="medium">₱0.00</td>
           </tr>
-
           <tr>
             <td>16 oz Large</td>
             <td><input type="number" value="100" min="0" class="starting" data-size="large" /></td>
@@ -327,7 +265,6 @@
             <td>₱39.00</td>
             <td class="sales-output" data-size="large">₱0.00</td>
           </tr>
-
           <tr class="total-row">
             <td>Total</td>
             <td id="totalStarting">200</td>
@@ -379,7 +316,7 @@
       </div>
 
       <div class="buttons">
-        <button class="primary" id="saveBtn">Save Daily Log</button>
+        <button class="primary" id="saveBtn">Save Daily</button>
         <button class="secondary" id="monthlyBtn">Monthly Summary</button>
         <button class="secondary" id="resetBtn">Reset</button>
         <button class="secondary" id="printBtn">Print</button>
@@ -394,84 +331,7 @@
     const STORAGE_KEY = "fruit_soda_daily_logs";
 
     function money(value) {
-      return "₱" + Number(value).toFixed(2);
-    }
-
-    function getFormState() {
-      const mediumSold = Number(document.querySelector('.sold[data-size="medium"]').value) || 0;
-      const largeSold = Number(document.querySelector('.sold[data-size="large"]').value) || 0;
-      const mediumStarting = Number(document.querySelector('.starting[data-size="medium"]').value) || 0;
-      const largeStarting = Number(document.querySelector('.starting[data-size="large"]').value) || 0;
-      const mediumDamaged = Number(document.querySelector('.damaged[data-size="medium"]').value) || 0;
-      const largeDamaged = Number(document.querySelector('.damaged[data-size="large"]').value) || 0;
-      const nataAddons = Number(document.getElementById('nataAddons').value) || 0;
-      const expenses = Number(document.getElementById('expenses').value) || 0;
-      const cashReceived = Number(document.getElementById('cashReceived').value) || 0;
-      const onlinePayment = Number(document.getElementById('onlinePayment').value) || 0;
-      const totalSold = Number(document.getElementById('totalSold').textContent) || 0;
-      const grossSales = Number(document.getElementById('grossSales').textContent.replace(/[^0-9.-]+/g, '')) || 0;
-      const netSales = Number(document.getElementById('netSalesDisplay').value.replace(/[^0-9.-]+/g, '')) || 0;
-      const remaining = Number(document.getElementById('remainingCups').textContent) || 0;
-
-      return {
-        date: document.getElementById('dateInput').value,
-        staff: document.getElementById('staffInput').value,
-        notes: document.getElementById('notes').value,
-        mediumStarting,
-        mediumSold,
-        mediumDamaged,
-        largeStarting,
-        largeSold,
-        largeDamaged,
-        totalSold,
-        grossSales,
-        nataAddons,
-        nataSales: nataAddons * PRICE_NATA,
-        expenses,
-        cashReceived,
-        onlinePayment,
-        netSales,
-        remaining,
-        savedAt: new Date().toISOString()
-      };
-    }
-
-    function saveDailyLog() {
-      const state = getFormState();
-      if (!state.date) {
-        alert('Please select a date before saving.');
-        return;
-      }
-
-      const logs = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-      logs[state.date] = state;
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(logs));
-      alert('Daily log saved successfully.');
-    }
-
-    function loadDailyLog() {
-      const date = document.getElementById('dateInput').value;
-      if (!date) return;
-
-      const logs = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-      const saved = logs[date];
-      if (!saved) return;
-
-      document.getElementById('staffInput').value = saved.staff || '';
-      document.getElementById('notes').value = saved.notes || '';
-      document.getElementById('cashReceived').value = saved.cashReceived || 0;
-      document.getElementById('expenses').value = saved.expenses || 0;
-      document.getElementById('onlinePayment').value = saved.onlinePayment || 0;
-      document.getElementById('nataAddons').value = saved.nataAddons || 0;
-
-      document.querySelector('.starting[data-size="medium"]').value = saved.mediumStarting || 100;
-      document.querySelector('.sold[data-size="medium"]').value = saved.mediumSold || 0;
-      document.querySelector('.damaged[data-size="medium"]').value = saved.mediumDamaged || 0;
-      document.querySelector('.starting[data-size="large"]').value = saved.largeStarting || 100;
-      document.querySelector('.sold[data-size="large"]').value = saved.largeSold || 0;
-      document.querySelector('.damaged[data-size="large"]').value = saved.largeDamaged || 0;
-
-      calculate();
+      return "₱" + Number(value || 0).toFixed(2);
     }
 
     function calculate() {
@@ -520,32 +380,91 @@
       document.getElementById('netSalesDisplay').value = money(netSales);
     }
 
-    document.getElementById('dateInput').addEventListener('change', loadDailyLog);
+    function saveDailyEntry() {
+      const date = document.getElementById('dateInput').value;
+      if (!date) {
+        alert('Please choose a date first.');
+        return;
+      }
+
+      const logs = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+      const totalSold = Number(document.getElementById('totalSold').textContent) || 0;
+      const grossSales = Number(document.getElementById('grossSales').textContent.replace(/[^0-9.-]+/g, '')) || 0;
+      const expenses = Number(document.getElementById('expenses').value) || 0;
+      const netSales = grossSales + (Number(document.getElementById('nataAddons').value) || 0) * PRICE_NATA - expenses;
+
+      logs[date] = {
+        date,
+        staff: document.getElementById('staffInput').value,
+        notes: document.getElementById('notes').value,
+        mediumSold: Number(document.querySelector('.sold[data-size="medium"]').value) || 0,
+        largeSold: Number(document.querySelector('.sold[data-size="large"]').value) || 0,
+        totalSold,
+        grossSales,
+        netSales,
+        expenses,
+        cashReceived: Number(document.getElementById('cashReceived').value) || 0,
+        onlinePayment: Number(document.getElementById('onlinePayment').value) || 0,
+        nataAddons: Number(document.getElementById('nataAddons').value) || 0,
+        mediumStarting: Number(document.querySelector('.starting[data-size="medium"]').value) || 100,
+        largeStarting: Number(document.querySelector('.starting[data-size="large"]').value) || 100,
+        mediumDamaged: Number(document.querySelector('.damaged[data-size="medium"]').value) || 0,
+        largeDamaged: Number(document.querySelector('.damaged[data-size="large"]').value) || 0,
+        savedAt: new Date().toISOString()
+      };
+
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(logs));
+      alert('Daily log saved successfully.');
+    }
+
+    function loadSavedEntry() {
+      const date = document.getElementById('dateInput').value;
+      if (!date) return;
+
+      const logs = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+      const saved = logs[date];
+      if (!saved) return;
+
+      document.getElementById('staffInput').value = saved.staff || '';
+      document.getElementById('notes').value = saved.notes || '';
+      document.getElementById('cashReceived').value = saved.cashReceived || 0;
+      document.getElementById('expenses').value = saved.expenses || 0;
+      document.getElementById('onlinePayment').value = saved.onlinePayment || 0;
+      document.getElementById('nataAddons').value = saved.nataAddons || 0;
+      document.querySelector('.starting[data-size="medium"]').value = saved.mediumStarting || 100;
+      document.querySelector('.sold[data-size="medium"]').value = saved.mediumSold || 0;
+      document.querySelector('.damaged[data-size="medium"]').value = saved.mediumDamaged || 0;
+      document.querySelector('.starting[data-size="large"]').value = saved.largeStarting || 100;
+      document.querySelector('.sold[data-size="large"]').value = saved.largeSold || 0;
+      document.querySelector('.damaged[data-size="large"]').value = saved.largeDamaged || 0;
+
+      calculate();
+    }
+
+    document.getElementById('dateInput').addEventListener('change', loadSavedEntry);
     document.querySelectorAll('input').forEach((input) => {
-      input.addEventListener('input', calculate);
+      if (input.id !== 'dateInput' && input.id !== 'staffInput' && input.id !== 'notes') {
+        input.addEventListener('input', calculate);
+      }
     });
 
-    document.getElementById('saveBtn').addEventListener('click', saveDailyLog);
+    document.getElementById('saveBtn').addEventListener('click', saveDailyEntry);
     document.getElementById('monthlyBtn').addEventListener('click', () => {
       window.location.href = 'monthly-summary.html';
     });
-
+    document.getElementById('printBtn').addEventListener('click', () => window.print());
     document.getElementById('resetBtn').addEventListener('click', () => {
-      document.querySelectorAll('.starting').forEach((el) => el.value = 100);
-      document.querySelectorAll('.sold').forEach((el) => el.value = 0);
-      document.querySelectorAll('.damaged').forEach((el) => el.value = 0);
+      document.querySelectorAll('.starting').forEach(el => el.value = 100);
+      document.querySelectorAll('.sold').forEach(el => el.value = 0);
+      document.querySelectorAll('.damaged').forEach(el => el.value = 0);
       document.getElementById('cashReceived').value = 0;
       document.getElementById('expenses').value = 0;
       document.getElementById('onlinePayment').value = 0;
       document.getElementById('nataAddons').value = 0;
-      document.getElementById('notes').value = '';
       document.getElementById('staffInput').value = '';
+      document.getElementById('notes').value = '';
       document.getElementById('dateInput').value = '';
       calculate();
-    });
-
-    document.getElementById('printBtn').addEventListener('click', () => {
-      window.print();
     });
 
     calculate();
