@@ -379,7 +379,9 @@
       </div>
 
       <div class="buttons">
-        <button class="primary" id="resetBtn">Reset</button>
+        <button class="primary" id="saveBtn">Save Daily Log</button>
+        <button class="secondary" id="monthlyBtn">Monthly Summary</button>
+        <button class="secondary" id="resetBtn">Reset</button>
         <button class="secondary" id="printBtn">Print</button>
       </div>
     </div>
@@ -389,9 +391,87 @@
     const PRICE_MEDIUM = 29;
     const PRICE_LARGE = 39;
     const PRICE_NATA = 5;
+    const STORAGE_KEY = "fruit_soda_daily_logs";
 
     function money(value) {
       return "₱" + Number(value).toFixed(2);
+    }
+
+    function getFormState() {
+      const mediumSold = Number(document.querySelector('.sold[data-size="medium"]').value) || 0;
+      const largeSold = Number(document.querySelector('.sold[data-size="large"]').value) || 0;
+      const mediumStarting = Number(document.querySelector('.starting[data-size="medium"]').value) || 0;
+      const largeStarting = Number(document.querySelector('.starting[data-size="large"]').value) || 0;
+      const mediumDamaged = Number(document.querySelector('.damaged[data-size="medium"]').value) || 0;
+      const largeDamaged = Number(document.querySelector('.damaged[data-size="large"]').value) || 0;
+      const nataAddons = Number(document.getElementById('nataAddons').value) || 0;
+      const expenses = Number(document.getElementById('expenses').value) || 0;
+      const cashReceived = Number(document.getElementById('cashReceived').value) || 0;
+      const onlinePayment = Number(document.getElementById('onlinePayment').value) || 0;
+      const totalSold = Number(document.getElementById('totalSold').textContent) || 0;
+      const grossSales = Number(document.getElementById('grossSales').textContent.replace(/[^0-9.-]+/g, '')) || 0;
+      const netSales = Number(document.getElementById('netSalesDisplay').value.replace(/[^0-9.-]+/g, '')) || 0;
+      const remaining = Number(document.getElementById('remainingCups').textContent) || 0;
+
+      return {
+        date: document.getElementById('dateInput').value,
+        staff: document.getElementById('staffInput').value,
+        notes: document.getElementById('notes').value,
+        mediumStarting,
+        mediumSold,
+        mediumDamaged,
+        largeStarting,
+        largeSold,
+        largeDamaged,
+        totalSold,
+        grossSales,
+        nataAddons,
+        nataSales: nataAddons * PRICE_NATA,
+        expenses,
+        cashReceived,
+        onlinePayment,
+        netSales,
+        remaining,
+        savedAt: new Date().toISOString()
+      };
+    }
+
+    function saveDailyLog() {
+      const state = getFormState();
+      if (!state.date) {
+        alert('Please select a date before saving.');
+        return;
+      }
+
+      const logs = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+      logs[state.date] = state;
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(logs));
+      alert('Daily log saved successfully.');
+    }
+
+    function loadDailyLog() {
+      const date = document.getElementById('dateInput').value;
+      if (!date) return;
+
+      const logs = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+      const saved = logs[date];
+      if (!saved) return;
+
+      document.getElementById('staffInput').value = saved.staff || '';
+      document.getElementById('notes').value = saved.notes || '';
+      document.getElementById('cashReceived').value = saved.cashReceived || 0;
+      document.getElementById('expenses').value = saved.expenses || 0;
+      document.getElementById('onlinePayment').value = saved.onlinePayment || 0;
+      document.getElementById('nataAddons').value = saved.nataAddons || 0;
+
+      document.querySelector('.starting[data-size="medium"]').value = saved.mediumStarting || 100;
+      document.querySelector('.sold[data-size="medium"]').value = saved.mediumSold || 0;
+      document.querySelector('.damaged[data-size="medium"]').value = saved.mediumDamaged || 0;
+      document.querySelector('.starting[data-size="large"]').value = saved.largeStarting || 100;
+      document.querySelector('.sold[data-size="large"]').value = saved.largeSold || 0;
+      document.querySelector('.damaged[data-size="large"]').value = saved.largeDamaged || 0;
+
+      calculate();
     }
 
     function calculate() {
@@ -401,7 +481,7 @@
       let totalRemaining = 0;
       let grossSales = 0;
 
-      document.querySelectorAll(".starting").forEach((startInput) => {
+      document.querySelectorAll('.starting').forEach((startInput) => {
         const size = startInput.dataset.size;
         const starting = Number(startInput.value) || 0;
         const sold = Number(document.querySelector(`.sold[data-size="${size}"]`).value) || 0;
@@ -410,7 +490,7 @@
 
         document.querySelector(`.remaining-output[data-size="${size}"]`).textContent = remaining;
 
-        const price = size === "medium" ? PRICE_MEDIUM : PRICE_LARGE;
+        const price = size === 'medium' ? PRICE_MEDIUM : PRICE_LARGE;
         const sales = sold * price;
         document.querySelector(`.sales-output[data-size="${size}"]`).textContent = money(sales);
 
@@ -421,44 +501,50 @@
         grossSales += sales;
       });
 
-      const nataAddons = Number(document.getElementById("nataAddons").value) || 0;
+      const nataAddons = Number(document.getElementById('nataAddons').value) || 0;
       const nataSales = nataAddons * PRICE_NATA;
-      const expenses = Number(document.getElementById("expenses").value) || 0;
+      const expenses = Number(document.getElementById('expenses').value) || 0;
       const totalSales = grossSales + nataSales;
       const netSales = totalSales - expenses;
 
-      document.getElementById("totalStarting").textContent = totalStarting;
-      document.getElementById("totalSold").textContent = totalSold;
-      document.getElementById("totalDamaged").textContent = totalDamaged;
-      document.getElementById("totalRemaining").textContent = totalRemaining;
-      document.getElementById("totalSales").textContent = money(totalSales);
+      document.getElementById('totalStarting').textContent = totalStarting;
+      document.getElementById('totalSold').textContent = totalSold;
+      document.getElementById('totalDamaged').textContent = totalDamaged;
+      document.getElementById('totalRemaining').textContent = totalRemaining;
+      document.getElementById('totalSales').textContent = money(totalSales);
 
-      document.getElementById("totalCupsSold").textContent = totalSold;
-      document.getElementById("grossSales").textContent = money(grossSales);
-      document.getElementById("remainingCups").textContent = totalRemaining;
-      document.getElementById("nataSales").textContent = money(nataSales);
-      document.getElementById("netSalesDisplay").value = money(netSales);
+      document.getElementById('totalCupsSold').textContent = totalSold;
+      document.getElementById('grossSales').textContent = money(grossSales);
+      document.getElementById('remainingCups').textContent = totalRemaining;
+      document.getElementById('nataSales').textContent = money(nataSales);
+      document.getElementById('netSalesDisplay').value = money(netSales);
     }
 
-    document.querySelectorAll("input").forEach((input) => {
-      input.addEventListener("input", calculate);
+    document.getElementById('dateInput').addEventListener('change', loadDailyLog);
+    document.querySelectorAll('input').forEach((input) => {
+      input.addEventListener('input', calculate);
     });
 
-    document.getElementById("resetBtn").addEventListener("click", () => {
-      document.querySelectorAll(".starting").forEach((el) => el.value = 100);
-      document.querySelectorAll(".sold").forEach((el) => el.value = 0);
-      document.querySelectorAll(".damaged").forEach((el) => el.value = 0);
-      document.getElementById("cashReceived").value = 0;
-      document.getElementById("expenses").value = 0;
-      document.getElementById("onlinePayment").value = 0;
-      document.getElementById("nataAddons").value = 0;
-      document.getElementById("dateInput").value = "";
-      document.getElementById("staffInput").value = "";
-      document.getElementById("notes").value = "";
+    document.getElementById('saveBtn').addEventListener('click', saveDailyLog);
+    document.getElementById('monthlyBtn').addEventListener('click', () => {
+      window.location.href = 'monthly-summary.html';
+    });
+
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      document.querySelectorAll('.starting').forEach((el) => el.value = 100);
+      document.querySelectorAll('.sold').forEach((el) => el.value = 0);
+      document.querySelectorAll('.damaged').forEach((el) => el.value = 0);
+      document.getElementById('cashReceived').value = 0;
+      document.getElementById('expenses').value = 0;
+      document.getElementById('onlinePayment').value = 0;
+      document.getElementById('nataAddons').value = 0;
+      document.getElementById('notes').value = '';
+      document.getElementById('staffInput').value = '';
+      document.getElementById('dateInput').value = '';
       calculate();
     });
 
-    document.getElementById("printBtn").addEventListener("click", () => {
+    document.getElementById('printBtn').addEventListener('click', () => {
       window.print();
     });
 
